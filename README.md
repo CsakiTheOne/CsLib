@@ -51,6 +51,20 @@ fun CToast(
 )
 ```
 
+### PreferenceHolder
+
+A composable function that can load and save a primitive or (some) complex value. Preference holders with the same id will stay in sync, no matter how many there are in the application.
+
+```kt
+@Composable
+fun <T> PreferenceHolder(
+    id: String,
+    value: T,
+    onValueChanged: (T) -> Unit,
+    defaultValue: T,
+)
+```
+
 ### SystemBars
 
 Composable function to manage the system bar appearance in an Android application.
