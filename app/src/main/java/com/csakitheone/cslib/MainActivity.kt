@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.csakitheone.cslib.dragdrop.Draggable
 import com.csakitheone.cslib.dragdrop.DropTarget
+import com.csakitheone.cslib.dragdrop.rememberDragDropState
 import com.csakitheone.cslib.ui.theme.CsLibTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,8 +38,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainScreen() {
         CsLibTheme {
-            var isDragging by remember { mutableStateOf(false) }
-            var dragOffset by remember { mutableStateOf(Offset(0f, 0f)) }
+            val dragDropState = rememberDragDropState()
             var dragTarget by remember { mutableStateOf(0) }
 
             Surface(
@@ -49,11 +50,10 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceEvenly,
                 ) {
+                    Text(text = dragDropState.toString())
                     Draggable(
-                        onDragStateChange = { isDrag: Boolean, offset: Offset ->
-                            isDragging = isDrag
-                            dragOffset = offset
-                        }
+                        state = dragDropState,
+                        isLongPressNeeded = false,
                     ) {
                         Surface(
                             modifier = Modifier
@@ -64,8 +64,7 @@ class MainActivity : ComponentActivity() {
                         ) {}
                     }
                     DropTarget(
-                        isDragging = isDragging,
-                        dragOffset = dragOffset,
+                        state = dragDropState,
                         onDragEnter = { dragTarget = 1 },
                         onDragExit = { dragTarget = 0 },
                     ) {

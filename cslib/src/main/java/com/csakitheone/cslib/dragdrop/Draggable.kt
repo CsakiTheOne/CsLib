@@ -21,13 +21,11 @@ import kotlin.math.roundToInt
 @Composable
 fun Draggable(
     modifier: Modifier = Modifier,
-    onDragStateChange: (isDragging: Boolean, offset: Offset) -> Unit,
+    state: DragDropState,
     isLongPressNeeded: Boolean = true,
     showGhost: Boolean = true,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    var isDragging by remember { mutableStateOf(false) }
-    var localOffset by remember { mutableStateOf(Offset.Zero) }
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
 
     Box(
@@ -39,47 +37,43 @@ fun Draggable(
                 if (isLongPressNeeded) {
                     detectDragGesturesAfterLongPress(
                         onDragStart = {
-                            isDragging = true
-                            localOffset = currentPosition + it
-                            onDragStateChange(isDragging, localOffset)
+                            state.isDragging = true
+                            state.dragOffset = currentPosition + it
                         }, onDrag = { change, dragAmount ->
                             change.consume()
-                            localOffset += dragAmount
-                            onDragStateChange(isDragging, localOffset)
+                            state.dragOffset += dragAmount
                         }, onDragEnd = {
-                            isDragging = false
-                            onDragStateChange(isDragging, Offset.Zero)
+                            state.isDragging = false
+                            state.dragOffset = Offset.Zero
                         }, onDragCancel = {
-                            isDragging = false
-                            onDragStateChange(isDragging, Offset.Zero)
+                            state.isDragging = false
+                            state.dragOffset = Offset.Zero
                         }
                     )
                 } else {
                     detectDragGestures(
                         onDragStart = {
-                            isDragging = true
-                            localOffset = currentPosition + it
-                            onDragStateChange(isDragging, localOffset)
+                            state.isDragging = true
+                            state.dragOffset = currentPosition + it
                         }, onDrag = { change, dragAmount ->
                             change.consume()
-                            localOffset += dragAmount
-                            onDragStateChange(isDragging, localOffset)
+                            state.dragOffset += dragAmount
                         }, onDragEnd = {
-                            isDragging = false
-                            onDragStateChange(isDragging, Offset.Zero)
+                            state.isDragging = false
+                            state.dragOffset = Offset.Zero
                         }, onDragCancel = {
-                            isDragging = false
-                            onDragStateChange(isDragging, Offset.Zero)
+                            state.isDragging = false
+                            state.dragOffset = Offset.Zero
                         }
                     )
                 }
             },
     ) {
-        if (showGhost && isDragging) {
+        if (showGhost && state.isDragging) {
             Popup(
                 offset = IntOffset(
-                    (localOffset.x - currentPosition.x).roundToInt(),
-                    (localOffset.y - currentPosition.y).roundToInt()
+                    (state.dragOffset.x - currentPosition.x).roundToInt(),
+                    (state.dragOffset.y - currentPosition.y).roundToInt()
                 ),
             ) {
                 Box {
