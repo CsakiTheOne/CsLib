@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 @Composable
 fun DropTarget(
     modifier: Modifier = Modifier,
+    isDragging: Boolean,
     dragOffset: Offset,
     onDragEnter: () -> Unit,
     onDragExit: () -> Unit = {},
@@ -27,7 +28,7 @@ fun DropTarget(
         modifier = modifier
             .onGloballyPositioned {
                 val rect = it.boundsInWindow()
-                if (rect.contains(dragOffset) && !isInBounds) {
+                if (rect.contains(dragOffset) && !isInBounds && isDragging) {
                     onDragEnter()
                     isInBounds = true
                 }
