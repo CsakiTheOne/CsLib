@@ -44,6 +44,7 @@ fun Draggable(
                             state.dragOffset += dragAmount
                         }, onDragEnd = {
                             state.isDragging = false
+                            state.dragEnd()
                             state.dragOffset = Offset.Zero
                         }, onDragCancel = {
                             state.isDragging = false
@@ -60,6 +61,7 @@ fun Draggable(
                             state.dragOffset += dragAmount
                         }, onDragEnd = {
                             state.isDragging = false
+                            state.dragEnd()
                             state.dragOffset = Offset.Zero
                         }, onDragCancel = {
                             state.isDragging = false

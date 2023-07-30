@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.csakitheone.cslib.dragdrop.Draggable
 import com.csakitheone.cslib.dragdrop.DropTarget
 import com.csakitheone.cslib.dragdrop.rememberDragDropState
+import com.csakitheone.cslib.systemui.SystemBars
 import com.csakitheone.cslib.ui.theme.CsLibTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,8 +39,16 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainScreen() {
         CsLibTheme {
-            val dragDropState = rememberDragDropState()
+            var isImmersiveMode by remember { mutableStateOf(false) }
             var dragTarget by remember { mutableStateOf(0) }
+            val dragDropState = rememberDragDropState {
+                if (dragTarget == 1) isImmersiveMode = !isImmersiveMode
+            }
+
+            SystemBars(
+                navigationBarColor = MaterialTheme.colorScheme.background,
+                isImmersiveMode = isImmersiveMode,
+            )
 
             Surface(
                 modifier = Modifier.fillMaxSize(),
@@ -60,7 +69,7 @@ class MainActivity : ComponentActivity() {
                                 .width(100.dp)
                                 .height(100.dp),
                             color = MaterialTheme.colorScheme.primary,
-                            shadowElevation = 16.dp,
+                            shadowElevation = 8.dp,
                         ) {}
                     }
                     DropTarget(
@@ -74,7 +83,7 @@ class MainActivity : ComponentActivity() {
                                 .height(100.dp),
                             color = if (dragTarget == 1) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.surface,
-                            shadowElevation = 16.dp,
+                            shadowElevation = 8.dp,
                         ) {}
                     }
                 }

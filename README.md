@@ -27,7 +27,7 @@ dependencies {
 
 Kotlin:
 
-```kt
+```kotlin
 dependencies {
     implementation("com.github.CsakiTheOne:CsLib:Tag")
 }
@@ -43,7 +43,7 @@ Tag can be: a release, a short commit hash or 'master-SNAPSHOT'
 
 Displays a toast message in the current composition. The toast will display every time one of the parameters change and the text is not blank.
 
-```kt
+```kotlin
 @Composable
 fun CToast(
     text: String,
@@ -51,11 +51,49 @@ fun CToast(
 )
 ```
 
+### Drag and drop
+
+```kotlin
+var dragTarget by remember { mutableStateOf(0) }
+val dragDropState = rememberDragDropState {
+    if (dragTarget == 1) {
+        // do something
+    }
+}
+
+Draggable(
+    state = dragDropState,
+) {
+    Surface(
+        modifier = Modifier
+            .width(100.dp)
+            .height(100.dp),
+        color = MaterialTheme.colorScheme.primary,
+        shadowElevation = 8.dp,
+    ) {}
+}
+
+DropTarget(
+    state = dragDropState,
+    onDragEnter = { dragTarget = 1 },
+    onDragExit = { dragTarget = 0 },
+) {
+    Surface(
+        modifier = Modifier
+            .width(100.dp)
+            .height(100.dp),
+        color = if (dragTarget == 1) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.surface,
+        shadowElevation = 8.dp,
+    ) {}
+}
+```
+
 ### PreferenceHolder
 
 A composable function that can load and save a primitive or (some) complex value. Preference holders with the same id will stay in sync, no matter how many there are in the application.
 
-```kt
+```kotlin
 @Composable
 fun <T> PreferenceHolder(
     id: String,
@@ -73,13 +111,18 @@ Composable function to manage the system bar appearance in an Android applicatio
 * @param isStatusBarForegroundLight Determines whether the status bar icons and text should be light or dark. If null, the status bar color won't change.
 * @param navigationBarColor The color to be applied to the navigation bar. If null, the navigation bar color won't change.
 * @param isNavigationBarForegroundLight Determines whether the navigation bar icons and text should be light or dark. If null, the navigation bar color won't change.
+* @param isImmersiveMode If true, status and navigation bars will be hidden. If null, no changes will apply.
+* @param systemBarsBehavior Use WindowInsetsControllerCompat's behavior values.
 
-```kt
+```kotlin
 @Composable
 fun SystemBars(
     statusBarColor: Color? = null,
     isStatusBarForegroundLight: Boolean? = null,
     navigationBarColor: Color? = null,
     isNavigationBarForegroundLight: Boolean? = null,
+    isImmersiveMode: Boolean? = null,
+    systemBarsBehavior: Int? = null,
+    onApplyWindowInsets: ((WindowInsetsCompat) -> WindowInsetsCompat)? = null,
 )
 ```
